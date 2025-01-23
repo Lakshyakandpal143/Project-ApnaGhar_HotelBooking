@@ -1,14 +1,13 @@
 <% layout("/layouts/boilerplate") %>
 <div class="row mt-5 ">
-    <div class="col-8 offset-3">
-        <h3>Listing Details :</h3>
+    <div class="col-8 offset-2">
+        <h3><%= list.title %> :</h3>
     </div>
-    <div class="col-6 offset-3">
+    <div class="col-6 offset-2">
         <div class="card ">
-            <img src="<%= list.image %>" class="card-img-top show-img col-6" alt="listing-image">
+            <img src="<%= list.image %>" class="card-img-top show-img col-6" alt="listing-image"> <br>
             <div class="card-body">
                 <p class="card-text">
-                    <b><%= list.title %></b><br>
                     <%= list.description %> <br>
                     &#8377;<%= list.price.toLocaleString("en-IN") %> <br>
                     <%= list.location %> <br>
@@ -18,8 +17,8 @@
         </div>
     </div>
     </div>
-    <div class="btns mb-5 row">
-        <div class="col-auto offset-3">
+    <div class="btns row">
+        <div class="col-auto offset-2">
             <form action="/listings/<%= list._id %>/edit" method="get">
                 <button class="btn btn-dark edit-btn">Edit</button>
             </form>
@@ -28,6 +27,24 @@
             <form action="/listings/<%= list._id %>?_method=DELETE" method="post">
                 <button class="btn btn-dark">Delete</button>
             </form>
+        </div>
+        <div class="col-8 offset-2">
+            <hr>
+            <h4>Leave a review:</h4>
+            <form action="/listings/<%=list.id%>/reviews" method="POST" novalidate class="needs-validation">
+            <div class="mb-3 mt-3">
+                <label for="rating" class="form-label">Rating</label>
+                <input type="range" name="review[rating]" id="rating" min="1" max="5" class="form-range">
+            </div>
+            <div class="mb-3 mt-3">
+                <label for="comment" class="form-label">Comments</label>
+                <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required></textarea>
+                <div class="invalid-feedback">
+                    Please submit some comments for review
+                </div>
+            </div>
+            <button class="btn btn-outline-dark">Submit</button>
+        </form>
         </div>
     </div>
 </body>

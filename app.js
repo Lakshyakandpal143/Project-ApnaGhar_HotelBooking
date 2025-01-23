@@ -5,7 +5,9 @@ const Listing=require("./models/listings.js");
 const path=require("path");
 const wrapAsync=require("./utils/wrapAsync.js");
 const expressError=require("./utils/expressError.js");
-const {listingSchema}=require("./schema.js");
+const { listingSchema , reviewSchema }=require("./schema.js");
+const Review=require("./models/reviews.js");
+
 
 const mongo_url="mongodb://127.0.0.1:27017/apnaGhar";
 
@@ -39,6 +41,15 @@ app.get("/",(req,res)=>{
 
 const validateListing=(req,res,next)=>{
     let {error}=listingSchema.validate(req.body);
+    if(error){
+        let errMsg=error.details.map((el)=>el.message).join(",");
+        throw new expressError(400,errMsg) ;
+      }else{
+        next();
+    }
+};
+const validateReview=(req,res,next)=>{
+    let {error}=reviewSchema.validate(req.body);
     if(error){
         let errMsg=error.details.map((el)=>el.message).join(",");
         throw new expressError(400,errMsg) ;
@@ -94,6 +105,20 @@ app.delete("/listings/:id",wrapAsync(async (req,res)=>{
     res.redirect("/listings");
 }));
 
+//Reviews route
+//post route
+app.post("/listings/:id/reviews",validateReview, wrapAsync(async (req, res) => {
+    let listing = await Listing.findById(req.params.id);
+
+    let newReview = new Review(req.body.review);
+
+    listing.reviews.push(newReview);
+    await newReview.save(); 
+    await listing.save(); 
+
+    console.log("New review added");
+    res.send("New review added");
+}));
 
 
 // app.get("/testListen",async (req,res)=>{
