@@ -18,7 +18,9 @@
         </div>
     </div>
     </div>
+    
     <div class="btns row mb-4">
+        <% if(currentUser&&currentUser._id.equals(list.owner._id)){ %>
         <div class="col-auto offset-3">
             <form action="/listings/<%= list._id %>/edit" method="get">
                 <button class="btn btn-dark edit-btn">Edit</button>
@@ -29,8 +31,12 @@
                 <button class="btn btn-dark">Delete</button>
             </form>
         </div>
-        </div>
+        <% } %>
+    </div>
+
+
         <div class="col-8 offset-2">
+            <% if(currentUser){ %>
             <hr>
             <h4>Leave a review:</h4>
             <form action="/listings/<%=list.id%>/reviews" method="POST" novalidate class="needs-validation">
@@ -47,6 +53,7 @@
             </div>
             <button class="btn btn-outline-dark">Submit</button>
         </form>
+        <% } %>
 
         <hr>
         <h4>All Reviews:</h4><br>
@@ -54,12 +61,14 @@
             <% for(review of list.reviews){ %>
             <div class="card col-5 ms-5 mb-3">
                 <div class="card-body">
-                    <h5 class="card-title">Name</h5>
+                    <h5 class="card-title"><%= review.author.username %></h5>
                     <p class="card-text"><%= review.comment %></p>
                     <p class="card-text"><%= review.rating %> stars</p>
                 </div>
                 <form class="mb-3 mt-2" action="/listings/<%= list._id %>/reviews/<%= review._id %>?_method=DELETE" method="post">
+                    <% if(currentUser&&currentUser._id.equals(review.author._id)){ %>
                     <button class="btn btn-dark btn-sm">Delete</button>
+                    <% } %>
                 </form>
             </div>
             <% } %>
